@@ -1,7 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
 
- Hero Promotional Banner 
 <div class="hero-banner">
   <div class="hero-content">
     <div class="hero-text">
@@ -35,7 +34,6 @@
   </div>
 </div>
 
- Flash Deals Section 
 <div class="flash-deals-section">
   <div class="section-header">
     <h2 class="section-title">⚡ Flash Deals</h2>
@@ -43,7 +41,6 @@
   </div>
 </div>
 
- Promotional Features 
 <div class="promo-features">
   <div class="feature-card">
     <div class="feature-icon">🚚</div>
@@ -102,15 +99,13 @@
     <h3><a href="{{ url_for('product', pid=product.id) }}">{{ product.name }}</a></h3>
     <p>{{ product.description }}</p>
     
-     Price with discount display 
     <div class="price-container">
       {% if loop.index % 3 == 0 %}
-        <span class="original-price">₱{{ "%.2f"|format(product.price * 1.5) }}</span>
+        <span class="original-price">₱{{ "%.2f"|format(product.price * 2) }}</span>
       {% endif %}
       <span class="price">₱{{ "%.2f"|format(product.price) }}</span>
     </div>
-    
-     Stock indicator 
+ 
     <div class="stock-indicator">
       {% if product.stock > 20 %}
         <span class="stock-status in-stock">✓ In Stock</span>
@@ -121,7 +116,7 @@
       {% endif %}
     </div>
 
-    {% if product.stock <= 0 %}
+    {% if product.stock == 0 %}
       <button class="sold-out-btn" disabled>Sold Out</button>
     {% else %}
       <form action="{{ url_for('add_to_cart') }}" method="POST">
@@ -135,7 +130,7 @@
 </div>
 
 <script>
-// Countdown Timer
+
 function updateCountdown() {
   const now = new Date().getTime();
   const endOfDay = new Date();
