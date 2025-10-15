@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h2>Admin Dashboard</h2>
+    <p>
+        <a href="{{ url_for('admin_product_new') }}">Add new product</a> | 
+        <a href="{{ url_for('admin_logout') }}">Logout</a> | 
+        <a href="{{ url_for('admin_orders') }}">View Orders</a> | 
+        <a href="{{ url_for('adminindex') }}">Home</a>
+    </p>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>CAtegory</th>
+                <th>Sub-Category</th>
+                <th>Stock</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in products %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.name }}</td>
+                <td>₱{{ "%.2f"|format(p.price) }}</td>
+                <td>{{ p.category }}</td>
+                <td>{{ p.subcategory }}</td>
+                <td>{{ p.stock }}</td>
+                <td>
+                    {% if p.image %}
+                        <img src="{{ url_for('static', filename='uploads/' ~ p.image) }}" style="height:40px;">
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{{ url_for('admin_product_edit', pid=p.id) }}">Edit</a>
+                    <form action="{{ url_for('admin_product_delete', pid=p.id) }}" method="post" style="display:inline" onsubmit="return confirm('Delete product?')">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

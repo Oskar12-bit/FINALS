@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if orders %}
+    {% for order in orders %}
+      <div class="order-card">
+        <h3>Order #{{ order.id }}</h3>
+        <p><strong>Total:</strong> ₱{{ order.total }}</p>
+        <p class="text-muted">Placed on: {{ order.created_at }}</p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Qty</th>
+              <th>Price</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in order['items'] %}
+              <tr>
+                <td>
+                  {% if item.product_image %}
+                    <img src="{{ url_for('static', filename='uploads/' ~ item.product_image) }}" width="60" class="mr-2" style="vertical-align: middle; border-radius: 6px;">
+                  {% endif %}
+                  {{ item.product_name }}
+                </td>
+                <td>{{ item.qty }}</td>
+                <td>₱{{ item.price }}</td>
+                <td>₱{{ (item.qty * item.price) | round(2) }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% if order.block %}
+          <p>Blockchain Hash: <code>{{ order.block.hash }}</code></p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  {% else %}
+    <p class="text-muted">You have not placed any orders yet.</p>
+  {% endif %}
+{% endblock %}

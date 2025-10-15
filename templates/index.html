@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+{% block content %}
+
+ Hero Promotional Banner 
+<div class="hero-banner">
+  <div class="hero-content">
+    <div class="hero-text">
+      <h1 class="hero-title">🔥 Mega Sale Event</h1>
+      <p class="hero-subtitle">Up to 70% OFF on Selected Items</p>
+      <div class="hero-badges">
+        <span class="promo-badge">Free Shipping</span>
+        <span class="promo-badge">24/7 Support</span>
+        <span class="promo-badge">Easy Returns</span>
+      </div>
+    </div>
+    <div class="countdown-timer">
+      <div class="timer-label">⏰ Sale Ends In:</div>
+      <div class="timer-display">
+        <div class="timer-unit">
+          <span class="timer-value" id="hours">23</span>
+          <span class="timer-text">Hours</span>
+        </div>
+        <div class="timer-separator">:</div>
+        <div class="timer-unit">
+          <span class="timer-value" id="minutes">59</span>
+          <span class="timer-text">Minutes</span>
+        </div>
+        <div class="timer-separator">:</div>
+        <div class="timer-unit">
+          <span class="timer-value" id="seconds">45</span>
+          <span class="timer-text">Seconds</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+ Flash Deals Section 
+<div class="flash-deals-section">
+  <div class="section-header">
+    <h2 class="section-title">⚡ Flash Deals</h2>
+    <p class="section-subtitle">Limited time offers - Grab them before they're gone!</p>
+  </div>
+</div>
+
+ Promotional Features 
+<div class="promo-features">
+  <div class="feature-card">
+    <div class="feature-icon">🚚</div>
+    <h3>Free Delivery</h3>
+    <p>On orders over ₱500</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">💯</div>
+    <h3>Quality Guarantee</h3>
+    <p>100% authentic products</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">🔒</div>
+    <h3>Secure Payment</h3>
+    <p>Safe & encrypted checkout</p>
+  </div>
+  <div class="feature-card">
+    <div class="feature-icon">↩️</div>
+    <h3>Easy Returns</h3>
+    <p>30-day return policy</p>
+  </div>
+</div>
+
+<h2 class="products-section-title">
+  {% if category %}
+    {{ category }}{% if selected_subcategory %} → {{ selected_subcategory }}{% endif %}
+  {% else %}
+    🛍️ All Products
+  {% endif %}
+</h2>
+
+<div class="products-grid">
+  {% for product in products %}
+  <div class="card">
+     Promotional Badge 
+    <div class="deal-badges">
+      {% if loop.index % 3 == 0 %}
+        <span class="deal-badge hot-deal">🔥 HOT</span>
+      {% elif loop.index % 2 == 0 %}
+        <span class="deal-badge new-arrival">✨ NEW</span>
+      {% else %}
+        <span class="deal-badge limited">⚡ LIMITED</span>
+      {% endif %}
+      
+      {% if loop.index % 4 == 0 %}
+        <span class="discount-badge">-50%</span>
+      {% elif loop.index % 3 == 0 %}
+        <span class="discount-badge">-30%</span>
+      {% endif %}
+    </div>
+
+    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" 
+         alt="{{ product.name }}" 
+         class="thumb">
+    
+    <h3><a href="{{ url_for('product', pid=product.id) }}">{{ product.name }}</a></h3>
+    <p>{{ product.description }}</p>
+    
+     Price with discount display 
+    <div class="price-container">
+      {% if loop.index % 3 == 0 %}
+        <span class="original-price">₱{{ "%.2f"|format(product.price * 1.5) }}</span>
+      {% endif %}
+      <span class="price">₱{{ "%.2f"|format(product.price) }}</span>
+    </div>
+    
+     Stock indicator 
+    <div class="stock-indicator">
+      {% if product.stock > 20 %}
+        <span class="stock-status in-stock">✓ In Stock</span>
+      {% elif product.stock > 0 %}
+        <span class="stock-status low-stock">⚠️ Only {{ product.stock }} left!</span>
+      {% else %}
+        <span class="stock-status out-stock">✗ Sold Out</span>
+      {% endif %}
+    </div>
+
+    {% if product.stock <= 0 %}
+      <button class="sold-out-btn" disabled>Sold Out</button>
+    {% else %}
+      <form action="{{ url_for('add_to_cart') }}" method="POST">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="number" name="qty" value="1" min="1" max="{{ product.stock }}">
+        <button type="submit">🛒 Add to Cart</button>
+      </form>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+<script>
+// Countdown Timer
+function updateCountdown() {
+  const now = new Date().getTime();
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+  const distance = endOfDay - now;
+
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+  document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+  document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+</script>
+
+{% endblock %}

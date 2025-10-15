@@ -1,0 +1,50 @@
+CREATE DATABASE IF NOT EXISTS c_ecommerce_db;
+USE c_ecommerce_db;
+
+
+CREATE TABLE IF NOT EXISTS products (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  description TEXT,
+  price DECIMAL(10,2) NOT NULL,
+  stock INT NOT NULL DEFAULT 0,
+  image VARCHAR(255),          
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  username VARCHAR(100) UNIQUE,
+  password_hash VARCHAR(255),
+  role VARCHAR(50) DEFAULT 'customer'
+);
+
+
+CREATE TABLE IF NOT EXISTS orders (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  customer_name VARCHAR(255),
+  customer_email VARCHAR(255),
+  total DECIMAL(10,2),
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  order_id INT,
+  product_id INT,
+  qty INT,
+  price DECIMAL(10,2),
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE SET NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS blockchain (
+  idx INT AUTO_INCREMENT PRIMARY KEY, 
+  timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  data TEXT,            
+  prev_hash VARCHAR(255),
+  hash VARCHAR(255)
+);

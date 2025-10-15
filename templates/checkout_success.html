@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px 20px;
+            background-color: #f9f9f9;
+        }
+        h2 {
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+        code {
+            background-color: #eee;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 5px 0;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 4px;
+        }
+        a:hover {
+            background-color: #0069d9;
+        }
+        p {
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+    <h2>Thank you!</h2>
+    <p>Your order <strong>#{{ order_id }}</strong> was placed successfully.</p>
+    <p>Blockchain tx hash: <code>{{ chain_hash }}</code></p>
+    <p><a href="{{ url_for('index') }}">Continue shopping</a></p>
+</body>
+</html>

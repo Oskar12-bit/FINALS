@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="auth-container">
+  <div class="auth-card admin-card">
+    <div class="auth-header">
+      <div class="admin-badge">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <h2>Admin Portal</h2>
+      <p>Secure administrator access</p>
+    </div>
+    <form method="post" class="auth-form">
+      <div class="form-group">
+        <label for="username">Admin Username</label>
+        <input type="text" id="username" name="username" placeholder="Enter admin username" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Admin Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter admin password" required>
+      </div>
+      <button type="submit" class="btn-primary admin-btn">Access Admin Panel</button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">

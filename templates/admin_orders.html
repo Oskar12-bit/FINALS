@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+    .back-dashboard {
+        display: inline-block;
+        text-decoration: none;
+        color: #007BFF;
+        font-weight: bold;
+        padding: 6px 12px;
+        border: 1px solid #007BFF;
+        border-radius: 4px;
+        transition: all 0.2s ease-in-out;
+    }
+    .back-dashboard:hover {
+        background-color: #007BFF;
+        color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+</style>
+</head>
+<body>
+    <h2>All Orders</h2>
+    <p><a href="{{ url_for('admin_dashboard') }}" class="back-dashboard">← Back to Dashboard</a></p>
+
+    {% if orders %}
+        {% for o in orders %}
+            <div class="order-card">
+                <h3>Order #{{ o['id'] }}</h3>
+                <p><strong>Customer:</strong> {{ o['customer_name'] }} ({{ o['customer_email'] }})</p>
+                <p><strong>Total:</strong> ₱{{ "%.2f"|format(o['total']) }}</p>
+                <p><strong>Date:</strong> {{ o['created_at'] }}</p>
+
+                <h4>Ordered Items</h4>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Qty</th>
+                            <th>Price</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for it in o['items'] %}
+                        <tr>
+                            <td>{{ it['product_name'] }}</td>
+                            <td>{{ it['qty'] }}</td>
+                            <td>₱{{ "%.2f"|format(it['price']) }}</td>
+                            <td>₱{{ "%.2f"|format(it['qty'] * it['price']) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if o['block'] %}
+                    <h4>Blockchain Record</h4>
+                    <p><strong>Timestamp:</strong> {{ o['block']['timestamp'] }}</p>
+                    <p><strong>Hash:</strong> <code>{{ o['block']['hash'] }}</code></p>
+                    <p><strong>Previous Hash:</strong> <code>{{ o['block']['prev_hash'] }}</code></p>
+                    <p><strong>Data:</strong> {{ o['block']['data'] }}</p>
+                {% else %}
+                    <p><em>No blockchain record found for this order.</em></p>
+                {% endif %}
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>No orders found yet.</p>
+    {% endif %}
+</body>
+</html>

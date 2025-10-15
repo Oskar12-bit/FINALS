@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>{{ product.name }}</h2>
+  {% if product.image %}
+    <img src="{{ url_for('static', filename='uploads/' ~ product.image) }}" alt="{{ product.name }}" style="max-width:300px;">
+  {% endif %}
+  <p>{{ product.description }}</p>
+  <p>Price: ₱{{ "%.2f"|format(product.price) }}</p>
+  <p>Stock: {{ product.stock }}</p>
+  <form action="{{ url_for('add_to_cart') }}" method="post">
+    <input type="hidden" name="product_id" value="{{ product.id }}">
+    <input type="number" name="qty" value="1" min="1" max="{{ product.stock }}">
+    <button type="submit">Add to cart</button>
+  </form>
+{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
