@@ -14,10 +14,10 @@ ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
 
 DB_CONFIG = {
-    'host': 'localhost',
-    'user': 'root',
-    'password': '',     
-    'database': 'c_ecommerce_db'
+    'host': os.environ.get('DB_HOST', 'localhost'),
+    'user': os.environ.get('DB_USER', 'root'),
+    'password': os.environ.get('DB_PASS', ''),
+    'database': os.environ.get('DB_NAME', 'c_ecommerce_db')
 }
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -737,4 +737,5 @@ def view_subcategory(category, subcategory):
 
 # ---------- Run ----------
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) UNIQUE,
   password_hash VARCHAR(255),
-  role VARCHAR(50) 'customer'
+  role VARCHAR(50) DEFAULT 'customer'
 );
 
 
