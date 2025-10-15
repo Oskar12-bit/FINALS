@@ -8,7 +8,9 @@ CREATE TABLE IF NOT EXISTS products (
   description TEXT,
   price DECIMAL(10,2) NOT NULL,
   stock INT NOT NULL DEFAULT 0,
-  image VARCHAR(255),          
+  image VARCHAR(255),
+  category VARCHAR(255),
+  subcategory VARCHAR(255),          
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -17,7 +19,7 @@ CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   username VARCHAR(100) UNIQUE,
   password_hash VARCHAR(255),
-  role VARCHAR(50) DEFAULT 'customer'
+  role VARCHAR(50) 'customer'
 );
 
 
