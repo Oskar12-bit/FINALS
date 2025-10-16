@@ -1,6 +1,3 @@
-CREATE DATABASE IF NOT EXISTS c_ecommerce_db;
-USE c_ecommerce_db;
-
 
 CREATE TABLE IF NOT EXISTS products (
   id INT AUTO_INCREMENT PRIMARY KEY,

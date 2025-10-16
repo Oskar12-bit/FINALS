@@ -14,11 +14,11 @@ ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
 
 config = {
-    'host': os.environ.get('DB_HOST', 'appdevelopment-dodongoskar-d316.b.aivencloud.com'),
+    'host': os.environ.get('DB_HOST', 'mysql-1910805-dodongoskar-d316.b.aivencloud.com'),
     'user': os.environ.get('DB_USER', 'avnadmin'),
-    'password': os.environ.get('DB_PASS', 'AVNS_aGu6AEkJocH343WBhua'),
+    'password': os.environ.get('DB_PASS', 'AVNS_ylo12PkuojgWJUOeqHs'),
     'database': os.environ.get('DB_NAME', 'defaultdb'),
-    'port': int(os.environ.get('DB_PORT',3306))
+    'port': int(os.environ.get('DB_PORT',27990))
 }
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
