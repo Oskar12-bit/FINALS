@@ -104,7 +104,7 @@ def register():
         db = get_db()
         cursor = db.cursor()
         try:
-            cursor.execute("INSERT INTO users (username, email, password_hash, role) VALUES (%s, %s, %s, %s)",
+            cursor.execute("INSERT INTO users (username, email, password, role) VALUES (%s, %s, %s, %s)",
                            (name, email, pw_hash, 'user'))
             db.commit()
             flash("Registration successful! Please log in.", "success")
