@@ -104,7 +104,7 @@ def register():
         db = get_db()
         cursor = db.cursor()
         try:
-            cursor.execute("INSERT INTO users (username, email, password, role) VALUES (%s, %s, %s, %s)",
+            cursor.execute("INSERT INTO users (username, email, password_hash, role) VALUES (%s, %s, %s, %s)",
                            (name, email, pw_hash, 'user'))
             db.commit()
             flash("Registration successful! Please log in.", "success")
@@ -143,7 +143,7 @@ def login():
 
         db = get_db()
         cursor = db.cursor(dictionary=True)
-        cursor.execute("SELECT * FROM users WHERE username=%s AND password=%s", (username, password))
+        cursor.execute("SELECT * FROM users WHERE username=%s AND password_hash=%s", (username, password))
         user = cursor.fetchone()
         db.close()
 
