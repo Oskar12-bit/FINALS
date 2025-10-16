@@ -13,11 +13,11 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 ADMIN_USERNAME = 'admin'
 ADMIN_PASSWORD = 'admin123'
 
-DB_CONFIG = {
-    'host': os.environ.get('DB_HOST', 'localhost'),
-    'user': os.environ.get('DB_USER', 'root'),
-    'password': os.environ.get('DB_PASS', ''),
-    'database': os.environ.get('DB_NAME', 'c_ecommerce_db'),
+config = {
+    'host': os.environ.get('DB_HOST', 'appdevelopment-dodongoskar-d316.b.aivencloud.com'),
+    'user': os.environ.get('DB_USER', 'avnadmin'),
+    'password': os.environ.get('DB_PASS', 'AVNS_aGu6AEkJocH343WBhua'),
+    'database': os.environ.get('DB_NAME', 'defaultdb'),
     'port': int(os.environ.get('DB_PORT',3306))
 }
 
@@ -28,7 +28,7 @@ app.secret_key = 'super-secret-key'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def get_db():
-    return mysql.connector.connect(**DB_CONFIG)
+    return mysql.connector.connect(**config)
 
 
 def allowed_file(filename):
@@ -347,14 +347,12 @@ def clear_cart():
 
     user_id = session['user_id']
 
-    # Clear from DB cart table
     db = get_db()
     cursor = db.cursor()
     cursor.execute("DELETE FROM cart WHERE user_id = %s", (user_id,))
     db.commit()
     db.close()
 
-    # Clear from session cart
     cart_key = f"cart_{user_id}"
     session.pop(cart_key, None)
 
@@ -379,7 +377,6 @@ def delete_from_cart(product_id):
         flash('Item not found in cart.', 'warning')
     return redirect(url_for('cart'))
 
-# ---------- Checkout (requires login) ----------
 @app.route('/checkout', methods=['POST'])
 def checkout():
     if 'user_id' not in session:
@@ -391,7 +388,6 @@ def checkout():
     db = get_db()
     cursor = db.cursor(dictionary=True)
     try:
-        # read cart items from DB
         cursor.execute("""
             SELECT c.id AS cart_id, c.product_id, c.quantity, p.price
             FROM cart c
@@ -405,7 +401,6 @@ def checkout():
             flash("Cart empty!", "danger")
             return redirect(url_for('cart'))
 
-        # fetch user info
         cursor.execute("SELECT * FROM users WHERE id=%s", (user_id,))
         user = cursor.fetchone()
         if not user:
@@ -415,13 +410,11 @@ def checkout():
         customer_name = user.get('username') or user.get('name') or request.form.get('name') or 'Unnamed'
         customer_email = user.get('email') or request.form.get('email') or ''
 
-        # stock checks + prepare order_items
         total = Decimal('0.00')
         order_items = []
         for r in cart_rows:
             pid = r['product_id']
             qty = int(r['quantity'])
-            # check current stock
             cursor.execute("SELECT stock, price FROM products WHERE id=%s", (pid,))
             prod = cursor.fetchone()
             if not prod:
@@ -437,18 +430,16 @@ def checkout():
             total += price * qty
             order_items.append((pid, qty, price))
 
-        # create order
+
         cursor.execute("INSERT INTO orders (customer_name, customer_email, total) VALUES (%s, %s, %s)",
                        (customer_name, customer_email, str(total)))
         order_id = cursor.lastrowid
 
-        # insert order items and reduce stock
         for pid, qty, price in order_items:
             cursor.execute("INSERT INTO order_items (order_id, product_id, qty, price) VALUES (%s,%s,%s,%s)",
                            (order_id, pid, qty, str(price)))
             cursor.execute("UPDATE products SET stock = stock - %s WHERE id = %s", (qty, pid))
 
-        # clear user's cart rows
         cursor.execute("DELETE FROM cart WHERE user_id = %s", (user_id,))
 
         db.commit()
@@ -460,14 +451,13 @@ def checkout():
         cursor.close()
         db.close()
 
-    # append blockchain entry
     data = f"order:{order_id}|customer:{customer_name}|total:{total}"
     new_hash = append_block(data)
 
     flash("Checkout successful! Order ID: {}".format(order_id), "success")
     return render_template('checkout_success.html', order_id=order_id, chain_hash=new_hash)
 
-# ---------- Admin (unchanged but fixed) ----------
+
 def admin_logged_in():
     return session.get('admin_logged_in', False)
 
@@ -500,7 +490,6 @@ def admin_dashboard():
     products = query_products()
     return render_template('admin_dashboard.html', products=products)
 
-# alias used in template
 @app.route('/admin/products')
 def admin_products():
     return redirect(url_for('admin_dashboard'))
@@ -514,7 +503,7 @@ def admin_product_new():
         name = request.form.get('name')
         description = request.form.get('description')
         category = request.form.get('category')
-        subcategory = request.form.get('subcategory')  # 🆕
+        subcategory = request.form.get('subcategory')  
         price = request.form.get('price') or '0.00'
         stock = request.form.get('stock') or 0
         image_filename = None
@@ -610,11 +599,9 @@ def admin_orders():
     db = get_db()
     cursor = db.cursor(dictionary=True)
     try:
-        # Fetch all orders
         cursor.execute("SELECT * FROM orders ORDER BY created_at DESC")
         orders = cursor.fetchall()
 
-        # For each order, get its items and blockchain record
         for order in orders:
             c2 = db.cursor(dictionary=True)
             try:
@@ -650,11 +637,9 @@ def my_orders():
     db = get_db()
     cursor = db.cursor(dictionary=True)
     try:
-        # Fetch all orders for this user
         cursor.execute("SELECT * FROM orders WHERE customer_email=(SELECT email FROM users WHERE id=%s) ORDER BY created_at DESC", (user_id,))
         orders = cursor.fetchall()
 
-        # Fetch order items for each order
         for order in orders:
             c2 = db.cursor(dictionary=True)
             try:
@@ -668,7 +653,6 @@ def my_orders():
             finally:
                 c2.close()
 
-            # Fetch blockchain record for this order
             c3 = db.cursor(dictionary=True)
             try:
                 c3.execute("SELECT * FROM blockchain WHERE data LIKE %s ORDER BY timestamp DESC LIMIT 1", (f"%order:{order['id']}%",))
@@ -691,7 +675,6 @@ def view_category(category):
     cursor.close()
     db.close()
 
-    # Define subcategories for each category
     sub_map = {
         "Electronics": ["Laptop", "Cellphone", "Tablet", "Headphones", "Camera"],
         "Clothing": ["T-Shirts", "Pants", "Dresses", "Shoes", "Jackets"],
@@ -736,7 +719,6 @@ def view_subcategory(category, subcategory):
         selected_subcategory=subcategory
     )
 
-# ---------- Run ----------
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
