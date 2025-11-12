@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sari - Sari Store</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <header class="site-header">
+      {% if 'user_id' in session %}
+    <nav>
+      <div class="nav-left">
+        <a href="{{ url_for('index') }}" class="logo">Acal - Narvasa - Navales Sari-Sari Store</a>
+      </div>
+      <span>Welcome, {{ session['username'] }}</span>
+      <div class="nav-right">
+        <a href="{{ url_for('index') }}">Home</a>
+        <div class="dropdown">
+          <button class="dropbtn">Categories ▼</button>
+          <div class="dropdown-content">
+            <a href="{{ url_for('view_category', category='Electronics') }}">Electronics</a>
+            <a href="{{ url_for('view_category', category='Clothing') }}">Clothing</a>
+            <a href="{{ url_for('view_category', category='Accessories') }}">Accessories</a>
+          </div>
+        </div>
+        <a href="{{ url_for('my_orders') }}">My Orders</a>
+          <a href="{{ url_for('cart') }}" class="cart-link">🛒 Cart ({{ g.cart_count }})</a>
+          <a href="{{ url_for('logout') }}">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}">Login</a>
+          <a href="{{ url_for('register') }}">Register</a>
+        {% endif %}
+
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ===== Main Container ===== -->
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul class="flashes">
+          {% for category, msg in messages %}
+            <li class="flash {{ category }}">{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    {% if category == 'Electronics' %}
+<div class="floating-subcategories">
+  <a href="{{ url_for('view_subcategory', category='Electronics', subcategory='Laptop') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Laptop' %}active{% endif %}">
+     💻 Laptop
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Electronics', subcategory='Cellphone') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Cellphone' %}active{% endif %}">
+     📱 Cellphone
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Electronics', subcategory='Tablet') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Tablet' %}active{% endif %}">
+     📟 Tablet
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Electronics', subcategory='Accessories') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Accessories' %}active{% endif %}">
+     🎧 Accessories
+  </a>
+</div>
+{% elif category == 'Clothing' %}
+<div class="floating-subcategories">
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='T-Shirts') }}" 
+     class="subcat-btn {% if selected_subcategory == 'T-Shirts' %}active{% endif %}">
+     👕 T-Shirts
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Jackets') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Jackets' %}active{% endif %}">
+      Jackets
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Pants') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Pants' %}active{% endif %}">
+      Pants
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Dresses') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Dresses' %}active{% endif %}">
+      Dresses
+  </a><a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Shoes') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Shoes' %}active{% endif %}">
+      Shoes
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Women') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Women' %}active{% endif %}">
+     👗 Women
+  </a>
+  <a href="{{ url_for('view_subcategory', category='Clothing', subcategory='Kids') }}" 
+     class="subcat-btn {% if selected_subcategory == 'Kids' %}active{% endif %}">
+     🧒 Kids
+  </a>
+</div>
+{% endif %}
+
+
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <p>© <span id="year"></span> Acal - Narvasa - Navales Sari-Sari Store — Powered by Gasoline Engine. Developed by: JAmes Acal. AKo gud gahimo ani HAHA</p>
+
+  </footer>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
+</body>
+</html>

@@ -24,7 +24,7 @@ config = {
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
-app.secret_key = 'super-secret-key'  
+app.secret_key = 'abu-dhabi'  
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def get_db():
