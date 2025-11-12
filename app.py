@@ -407,8 +407,8 @@ def checkout():
             flash("User not found.", "danger")
             return redirect(url_for('cart'))
 
-        customer_name = user.get('username') or user.get('name') or request.form.get('name') or 'Unnamed'
-        customer_email = user.get('email') or request.form.get('email') or ''
+        customer_name = request.form.get('name') or user.get('username')
+        customer_address = request.form.get('address') or ''
 
         total = Decimal('0.00')
         order_items = []
@@ -431,8 +431,8 @@ def checkout():
             order_items.append((pid, qty, price))
 
 
-        cursor.execute("INSERT INTO orders (customer_name, customer_email, total) VALUES (%s, %s, %s)",
-                       (customer_name, customer_email, str(total)))
+        cursor.execute("INSERT INTO orders (customer_name, customer_address, total) VALUES (%s, %s, %s)",
+                       (customer_name, customer_address, str(total)))
         order_id = cursor.lastrowid
 
         for pid, qty, price in order_items:
@@ -455,7 +455,7 @@ def checkout():
     new_hash = append_block(data)
 
     flash("Checkout successful! Order ID: {}".format(order_id), "success")
-    return render_template('checkout_success.html', order_id=order_id, chain_hash=new_hash)
+    return render_template('checkout_success.html', order_id=order_id, chain_hash=new_hash, customer_address=customer_address)
 
 
 def admin_logged_in():
@@ -637,7 +637,7 @@ def my_orders():
     db = get_db()
     cursor = db.cursor(dictionary=True)
     try:
-        cursor.execute("SELECT * FROM orders WHERE customer_email=(SELECT email FROM users WHERE id=%s) ORDER BY created_at DESC", (user_id,))
+        cursor.execute("SELECT * FROM orders WHERE username=(SELECT username FROM users WHERE id=%s) ORDER BY created_at DESC", (user_id,))
         orders = cursor.fetchall()
 
         for order in orders:

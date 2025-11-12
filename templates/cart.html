@@ -63,8 +63,8 @@
 
   <h3 class="mt-2">Checkout</h3>
   <form action="{{ url_for('checkout') }}" method="post" class="checkout-form">
-    <input type="text" name="name" placeholder="Full Name" required>
-    <input type="email" name="email" placeholder="Email Address" required>
+    <input type="text" name="name" value="{{user.username}}"  required>
+    <input type="text" name="address" placeholder="Home Address" required>
     <button type="submit" class="btn btn-primary mt-2">Place Order</button>
   </form>
 </div>

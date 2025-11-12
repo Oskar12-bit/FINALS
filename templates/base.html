@@ -32,15 +32,15 @@
         <a href="{{ url_for('my_orders') }}">My Orders</a>
         <a href="{{ url_for('cart') }}" class="cart-link">🛒 Cart ({{ g.cart_count }})</a>
         <a href="{{ url_for('logout') }}">Logout</a>
-        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
       </nav>
       {% else %}
       <nav class="side-nav">
         <a href="{{ url_for('login') }}">Login</a>
         <a href="{{ url_for('register') }}">Register</a>
+        <a href="{{ url_for('admin_dashboard') }}">Admin</a>
       </nav>
       {% endif %}
-      <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+      
     </aside>
 
     <!-- ===== Main Content ===== -->
